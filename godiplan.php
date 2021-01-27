@@ -6,7 +6,7 @@ Plugin Name: Gottesdienstplan
 
 Description: Bietet die Möglichkeit, einen Gottesdienstplan aus den Veranstaltungen als CSV zu exportieren.
 
-Version: 0.1.0
+Version: 0.2.0
 
 Author: Ingo Schaefer
 
@@ -66,6 +66,12 @@ function godiplan_start_contents() {
 <?php 
 if (class_exists('EM_Events')) {
 	esc_html_e( 'Hier kann man einen Export der Veranstaltungen als CSV (für Excel) anklicken', 'godiplan' ); 
+	if (class_exists('evkj_WidgetAPI')) {
+		$method = new ReflectionMethod('evkj_WidgetAPI', 'getday');
+    		var_dump($method->getParameters());
+	} else {
+		esc_html_e( 'Warnung: Plugin Kirchenjahr evangelisch nicht korrekt installiert, Name des Sonntags/Feiertags kann nicht ermittelt werden.','godiplan' );
+}
 ?>
 </h1>
 <div class="godiplan_get_download_form">
