@@ -69,7 +69,7 @@ if (class_exists('EM_Events')) {
 	if (class_exists('evkj_WidgetAPI')) {
 		$found=false;
 		$method = new ReflectionMethod('evkj_WidgetAPI', 'getday');
-    		for($method->getParameters() as $parameter) {
+    		foreach($method->getParameters() as $parameter) {
 			if ($parameter->name=='rawarray') {
 				$found=true;
 				break;
