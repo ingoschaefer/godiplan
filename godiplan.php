@@ -153,6 +153,10 @@ function godiplan_get_download_form() {
 
 		// do the processing
 		if (class_exists('EM_Events')) {
+			$isKirchenjahrPluginThere=isKirchenjahrPluginThere();
+			if($isKirchenjahrPluginThere) {
+				$evkj_WidgetAPI=new evkj_WidgetAPI();
+			}
 			$locations=EM_Locations::get(array('array'=>1,'target'=>'raw'));
 			$filename=current_time('Y-m-d') . "_gottesdienstplan.csv";
 
@@ -181,7 +185,7 @@ function godiplan_get_download_form() {
 				$post_meta=get_post_meta($post_id);				
 				//print $EM_Event->output();
 				print($EM_Event['event_start_date'] . $SEP);
-				print($QUOT . '?? nyi' . $QUOT . $SEP);
+				print($QUOT . getNameOfDate($EM_Event['event_start_date'], $evkj_WidgetAPI) . $QUOT . $SEP);
 				print($EM_Event['event_start_time'] . $SEP);
 				$location_id=$EM_Event['location_id'];
 				print($QUOT . $orte[$location_id] . $QUOT . $SEP);
@@ -218,6 +222,14 @@ function godiplan_get_download_form() {
 					'response' 	=> 403,
 					'back_link' => 'admin.php?page=' . $this->plugin_name,
 			) );
+	}
+}
+
+function getNameOfDate($event_date, $evkj_WidgetAPI) {
+	$isKirchenjahrPluginThere=isKirchenjahrPluginThere();
+	if($isKirchenjahrPluginThere) {
+		$widgetResult=evkj_WidgetAPI->getday('small','none','false',$event_date,true,true);
+		return(print_r($widgetResult));
 	}
 }
 
