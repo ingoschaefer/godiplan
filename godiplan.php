@@ -229,8 +229,12 @@ function getNameOfDate($event_date, $evkj_WidgetAPI) {
 	$isKirchenjahrPluginThere=isKirchenjahrPluginThere();
 	if($isKirchenjahrPluginThere) {
 		$widgetResult=$evkj_WidgetAPI->getday('small','none','false',$event_date,true,true);
-		return(print_r($widgetResult));
+		if($widgetResult['litdate']==$event_date) {
+			return $widgetResult['litname'];
+		}
 	}
+	$dayofweek = date('w', strtotime($event_date));
+	return WP_Locale::get_weekday($dayofweek);
 }
 
 add_action( 'admin_post_godiplan_get_download_form', 'godiplan_get_download_form');
