@@ -234,7 +234,8 @@ function getNameOfDate($event_date, $evkj_WidgetAPI) {
 		}
 	}
 	$dayofweek = date('w', strtotime($event_date));
-	return WP_Locale::get_weekday($dayofweek);
+	global $wp_locale;
+	return $wp_locale->get_weekday($dayofweek);
 }
 
 add_action( 'admin_post_godiplan_get_download_form', 'godiplan_get_download_form');
