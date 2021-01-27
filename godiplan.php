@@ -67,15 +67,15 @@ function godiplan_start_contents() {
 if (class_exists('EM_Events')) {
 	esc_html_e( 'Hier kann man einen Export der Veranstaltungen als CSV (für Excel) anklicken', 'godiplan' ); 
 	if (class_exists('evkj_WidgetAPI')) {
-		found=false;
+		$found=false;
 		$method = new ReflectionMethod('evkj_WidgetAPI', 'getday');
     		for($method->getParameters() as $parameter) {
 			if ($parameter->name=='rawarray') {
-				found=true;
+				$found=true;
 				break;
 			}
 		}
-		if( !found) {
+		if( !$found) {
 			esc_html_e( 'Warnung: Plugin Kirchenjahr evangelisch hat benötigten Parameter nicht, vermutlich falsche Version installiert, Name des Sonntags/Feiertags kann nicht ermittelt werden.','godiplan' );
 		}
 	} else {
