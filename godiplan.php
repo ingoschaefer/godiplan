@@ -17,33 +17,6 @@ Text Domain: godiplan
 */
 
 
-
-function my_admin_menu() {
-
-add_menu_page(
-
-__( 'Gottesdienstplan', 'godiplan' ),
-
-__( 'Gottesdienstplan', 'godiplan' ),
-
-'manage_options',
-
-'godiplan-start',
-
-'godiplan_start_contents',
-
-'',
-
-50
-
-);
-
-}
-
-
-
-add_action( 'admin_menu', 'my_admin_menu' );
-
 /**
  * Create a submenu item within the Events Manager menu. 
  * In Multisite Global Mode, the admin menu will only appear on the main blog, this can be changed by modifying the first line of code in this function.
@@ -51,7 +24,7 @@ add_action( 'admin_menu', 'my_admin_menu' );
 function my_em_godiplan_submenu () {
 	$ms_global_mode = !EM_MS_GLOBAL || is_main_site();
 	if(function_exists('add_submenu_page') && ($ms_global_mode) ) {
-   		$plugin_page = add_submenu_page('edit.php?post_type='.EM_POST_TYPE_EVENT, __( 'Gottesdienstplan', 'godiplan' ), __( 'Gottesdienstplan', 'godiplan' ), 'manage_options', 'godiplan-start', 'godiplan_start_contents');
+   		$plugin_page = add_submenu_page('edit.php?post_type='.EM_POST_TYPE_EVENT, __( 'Gottesdienstplan', 'godiplan' ), __( 'Gottesdienstplan', 'godiplan' ), 'edit_events', 'godiplan-start', 'godiplan_start_contents');
   	}
 }
 add_action('admin_menu','my_em_godiplan_submenu', 20);
@@ -105,11 +78,13 @@ if (class_exists('EM_Events')) {
 <?php
 	wp_nonce_field('godiplan_get_download_form');
 ?>
+	<h2><?php esc_html_e( 'Veranstaltungskategorien wählen', 'godiplan' ); ?></h2>
 <?php
 	$event_categories=EM_Categories::get(array('array'=>1,'target'=>'raw'));
 	// print_r($event_categories);
 ?>
 				<div><input type="checkbox" name="category[]" value="-1" id="all"><label for="all">Alle Kategorien</label></input></div>
+	<h2><?php esc_html_e( 'oder', 'godiplan' ); ?></h2>
 				<?php 
 	foreach($event_categories as $category) { 
 ?>
@@ -117,8 +92,14 @@ if (class_exists('EM_Events')) {
 				<?php 
 	} 
 ?>
-
+<?php
+	if( current_user_can( 'publish_events') ) { 
+		?>
+<h2><?php esc_html_e( 'Für den Planer', 'godiplan' ); ?></h2>
 <div><input type="checkbox" name="private" value="1" id="private"><label for="private">Auch Veranstaltungen im Entwurfsstatus anzeigen</label></input></div>
+<?php
+	} // if( current_user_can( 'publish_events') )
+		?>
 <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
 	</form>
 	<br/><br/>
@@ -141,7 +122,7 @@ function godiplan_get_download_form() {
 	if( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'godiplan_get_download_form') ) {
 		$filters=array('array'=>1,'limit'=>10,'orderby'=>'event_start_date','private'=>1);
 
-		if( isset( $_POST['private'] )) {
+		if( current_user_can( 'publish_events') && isset( $_POST['private'] )) {
 			$filters['private']=1;
 		}
 		$categories = $_POST['category'];
