@@ -6,7 +6,7 @@ Plugin Name: Gottesdienstplan
 
 Description: Bietet die Möglichkeit, einen Gottesdienstplan aus den Veranstaltungen als CSV zu exportieren.
 
-Version: 0.2.0
+Version: 0.3.0
 
 Author: Ingo Schaefer
 
@@ -122,8 +122,8 @@ function godiplan_get_download_form() {
 	if( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'godiplan_get_download_form') ) {
 		$filters=array('array'=>1,'limit'=>10,'orderby'=>'event_start_date','private'=>1);
 
-		if( current_user_can( 'publish_events') && isset( $_POST['private'] )) {
-			$filters['private']=1;
+		if( !current_user_can( 'publish_events') || !isset( $_POST['private'] )) {
+			$filters['status']=1;
 		}
 		$categories = $_POST['category'];
 		if ( in_array(-1,$categories)) {
